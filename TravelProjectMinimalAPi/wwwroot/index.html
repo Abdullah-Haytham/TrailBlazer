@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 
 </head>
 
@@ -42,7 +43,7 @@
 
             <a href="#" class="rounded-btn">Signup</a>
         </div>
-        
+
         <div class="main-text">
             <h1>Your Path to Nature</h1>
             <p>Explore the wonders of the world</p>
@@ -90,14 +91,8 @@
                         <span class="rating">5</span>
                     </div>
                 </div>
-        </div>
 
-        <div id="top-hotels" class="top-hotels">
-
-            <h4>Top Hotels</h4>
-            
-            <div class="cards">
-                <div class="card card-hotel">
+                <div class="card card-destination">
                     <img src="images/hurgada.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">Mount Everest</h5>
@@ -105,36 +100,106 @@
                         <span class="rating">5</span>
                     </div>
                 </div>
-    
-                <div class="card card-hotel">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
+
+            </div>
+
+            <div id="top-hotels" class="top-hotels">
+
+                <h4>Top Hotels</h4>
+
+                <div class="cards">
+                    <div class="card card-hotel">
+                        <img src="images/hurgada.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Mount Everest</h5>
+                            <p class="country"></p>
+                            <span class="rating">5</span>
+                        </div>
                     </div>
-                </div>
-    
-                <div class="card card-hotel">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
+
+                    <div class="card card-hotel">
+                        <img src="images/hurgada.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Mount Everest</h5>
+                            <p class="country"></p>
+                            <span class="rating">5</span>
+                        </div>
+                    </div>
+
+                    <div class="card card-hotel">
+                        <img src="images/hurgada.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Mount Everest</h5>
+                            <p class="country"></p>
+                            <span class="rating">5</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div id="recommended" class="recommended">
+                <h4>Recommended</h4>
+                <p>Our personal recommendation blablabla</p>
+                <img style="width: 100%;" src="images/hurgada.jpg" alt="">
+            </div>
+
         </div>
 
-        <div id="recommended" class="recommended">
-            <h4>Recommended</h4>
-            <p>Our personal recommendation blablabla</p>
-            <img style="width: 100%;" src="images/hurgada.jpg" alt="">
+        <div class="container my-container mt-5">
+            <h1>Admin Form</h1>
+            <div class="flex">
+                <form id="form1" method="post" action="/add-destination" enctype="multipart/form-data">
+                    <div hidden hx-get="/get-token" hx-trigger="load" hx-swap="outerHTML"></div>
+                    <h5>Insert Destination</h5>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Destination</span>
+                        </div>
+                        <input id="destinationInput" name="destination" type="text" class="form-control" placeholder="Destination Name"
+                               aria-label="Destination" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="validation mb-3" id="destination-validation"></div>
+                    <div>
+                        <input id="fileInput" type="file" name="file" class="form-control"
+                               accept=".jpeg, .jpg, .png, .gif" />
+                        <div class="validation" id="file-validation"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                </form>
+
+                <form id="form2" method="post" action="/upload">
+                    <div hidden hx-get="/get-token" hx-trigger="load" hx-swap="outerHTML"></div>
+                    <h5>Delete Destination</h5>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Title</span>
+                        </div>
+                        <input id="titleInput" type="text" class="form-control" placeholder="Image title"
+                               aria-label="Title" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="validation mb-3" id="title-validation"></div>
+                    <div>
+                        <input id="fileInput" type="file" class="form-control"
+                               accept=".jpeg, .jpg, .png, .gif" />
+                        <div class="validation" id="file-validation"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                </form>
+            </div>
         </div>
-        
     </div>
 
-   
+
+    <footer style="width: 100%;">
+        <div class="text-center p-3" style="background-color: rgb(59, 115, 246);">
+            Copyright 2024 ©Abdullah Haytham Hedeya
+        </div>
+    </footer>
+
+
+
+
+
 
 </body>
 

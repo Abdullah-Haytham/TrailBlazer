@@ -101,6 +101,18 @@
 
 .cards{
     display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
     margin-top: 50px;
+}
+
+.recommended{
+    margin-bottom: 100px;
+}
+
+.flex{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
 }
