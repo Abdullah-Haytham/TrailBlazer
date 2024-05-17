@@ -1,9 +1,9 @@
 document.getElementById("form1").addEventListener('submit', (e) => {
     e.preventDefault();
 
-    console.log("da5alt")
     const destinationInput = document.getElementById("destinationInput")
     const fileInput = document.getElementById("fileInput")
+    const ratingInput = document.getElementById("rating")
 
     const destinationValidation = document.getElementById("destination-validation")
     const fileValidation = document.getElementById("file-validation")
@@ -26,13 +26,39 @@ document.getElementById("form1").addEventListener('submit', (e) => {
     var formData = new FormData();
     formData.append("destination", destinationInput.value)
     formData.append("file", fileInput.files[0], fileInput.files[0].name)
+    formData.append("rating", ratingInput.value)
 
 
     fetch("/add-destination", {
         method: "POST",
         body: formData
     })
-        .then(response => response.json())
-        .then(data => console.log(data))
+        .then(() => {  })
         .catch(error => console.error("Error:", error))
 })
+
+document.getElementById("form2").addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const deleteInput = document.getElementById("delete-input")
+
+    const deleteValidation = document.getElementById("delete-validation")
+
+    deleteValidation.innerText = ""
+
+    var isValid = true
+
+    if (deleteInput.value === "") {
+        destinationValidation.innerText = "Destination name is required"
+        isValid = false
+    }
+    if (!isValid) { return }
+
+
+    fetch(`/remove-destination/${deleteInput.value}`, {
+        method: "DELETE",
+    })
+        .then(() => { })
+        .catch(error => console.error("Error:", error))
+})
+

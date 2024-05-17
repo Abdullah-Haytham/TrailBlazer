@@ -1,5 +1,8 @@
-using Microsoft.AspNetCore.Antiforgery;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using System;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,43 +10,85 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAntiforgery();
+builder.Services.AddSingleton<IDbConnection>(_ => new SqliteConnection("Data Source=wwwroot/database/travel.db"));
 
 var app = builder.Build();
 
-app.UseAntiforgery();
 app.UseStaticFiles();
 app.MapFallbackToFile("/index.html");
 
-app.MapGet("/get-token", (IAntiforgery antiforgery, HttpContext context) =>
-{
-    var token = antiforgery.GetAndStoreTokens(context);
-    var tokenInput = $@"<input name=""{token.FormFieldName}"" type=""hidden"" value=""{token.RequestToken}"" />";
-    return Results.Content(tokenInput, "text/html");
-});
 
-app.MapPost("/add-destination", async ([FromForm] string destination, IAntiforgery antiforgery, HttpContext context) =>
+app.MapPost("/add-destination", async (HttpContext context, IDbConnection db) =>
 {
-    await antiforgery.ValidateRequestAsync(context);
     var form = await context.Request.ReadFormAsync();
     var file = form.Files.GetFile("file");
+    var destinationName = form["destination"];
+    var rating = form["rating"];
+
+    Console.WriteLine(rating);
+    
 
     if (file == null || file.Length == 0)
     {
         return Results.BadRequest("No file uploaded.");
     }
-    if (destination == "")
+    if (destinationName == "")
     {
         return Results.BadRequest("Destination not Received");
     }
 
     var fileId = Guid.NewGuid().ToString();
-    Directory.CreateDirectory("uploads");
-    var filePath = Path.Combine("uploads", fileId + Path.GetExtension(file.FileName));
+    Directory.CreateDirectory("wwwroot/uploads");
+    var filePath = "wwwroot/uploads/" + fileId + Path.GetExtension(file.FileName);
+    string relativePath = filePath.Replace("wwwroot/", "");
     using (var stream = new FileStream(filePath, FileMode.Create)) { await file.CopyToAsync(stream); }
+
+    var sql = "INSERT INTO destinations (Id, Name, Rating, Image) VALUES (@Id, @Name, @Rating, @Image)";
+    var rows = await db.ExecuteAsync(sql, new { Id=fileId, Name=destinationName, Rating=rating, Image=relativePath});
+    Console.WriteLine("The number of affected rows: " + rows);
     return Results.NoContent();
+});
+
+app.MapGet("/get-destinations", async (IDbConnection db) =>
+{
+    var sql = "SELECT * FROM destinations";
+    var destinations = await db.QueryAsync(sql);
+
+    string html = "";
+    foreach (var dest in destinations)
+    {
+        html += $@"
+        <div class=""card card-destination"">
+            <img src=""{dest.Image}"" class=""card-img-top"" alt=""..."">
+            <div class=""card-body"">
+                <h5 class=""card-title"">{dest.Name}</h5>
+                <p class=""country""></p>
+                <span class=""rating"">{dest.Rating}</span>
+            </div>
+        </div>";
+    }
+
+    return Results.Content(html);
+});
+
+app.MapDelete("/remove-destination/{name}", async (string name, IDbConnection db) =>
+{
+    var sql = $"SELECT Image FROM destinations WHERE Name=\"{name}\"";
+    var destinations = await db.QueryAsync(sql);
+    
+    foreach(var dest in destinations)
+    {
+        File.Delete($"{app.Environment.ContentRootPath}/wwwroot/{dest.Image}");
+    }
+
+    sql = $"delete from destinations where Name=\"{name}\"";
+    var count = await db.ExecuteAsync(sql);
+
+    if (count > 0) { return Results.Ok("destination removed successfully"); }
+    return Results.BadRequest("destination doesn't exist");
 });
 
 
 app.Run();
+
 

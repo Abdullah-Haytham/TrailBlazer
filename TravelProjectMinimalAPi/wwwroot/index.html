@@ -15,6 +15,7 @@
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="script.js" defer></script>
 
 </head>
 
@@ -54,53 +55,7 @@
         <div id="hot-destinations" class="hot-destinations">
             <h4>Explore These Hot Nature Destinations</h4>
 
-            <div class="cards">
-
-                <div class="card card-destination">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
-                    </div>
-                </div>
-
-                <div class="card card-destination">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
-                    </div>
-                </div>
-
-                <div class="card card-destination">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
-                    </div>
-                </div>
-
-                <div class="card card-destination">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
-                    </div>
-                </div>
-
-                <div class="card card-destination">
-                    <img src="images/hurgada.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Mount Everest</h5>
-                        <p class="country"></p>
-                        <span class="rating">5</span>
-                    </div>
-                </div>
-
+            <div class="cards" hx-get="/get-destinations" hx-trigger="every 3s" hx-swap="innerHTML">
             </div>
 
             <div id="top-hotels" class="top-hotels">
@@ -109,7 +64,7 @@
 
                 <div class="cards">
                     <div class="card card-hotel">
-                        <img src="images/hurgada.jpg" class="card-img-top" alt="...">
+                        <img src="uploads/2090c9e8-6630-4477-9f8d-6c737717dca2.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">Mount Everest</h5>
                             <p class="country"></p>
@@ -149,7 +104,6 @@
             <h1>Admin Form</h1>
             <div class="flex">
                 <form id="form1" method="post" action="/add-destination" enctype="multipart/form-data">
-                    <div hidden hx-get="/get-token" hx-trigger="load" hx-swap="outerHTML"></div>
                     <h5>Insert Destination</h5>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -162,28 +116,31 @@
                     <div>
                         <input id="fileInput" type="file" name="file" class="form-control"
                                accept=".jpeg, .jpg, .png, .gif" />
-                        <div class="validation" id="file-validation"></div>
+                        <div style="margin-bottom: 1rem;" class="validation" id="file-validation"></div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Upload</button>
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon2">Rating</span>
+                        </div>
+                        <input id="rating" name="rating" type="number" class="form-control" placeholder="Rating"
+                               aria-label="Rating" aria-describedby="basic-addon2" min="1" max="5" step="0.5" value="1">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Add</button>
                 </form>
 
-                <form id="form2" method="post" action="/upload">
-                    <div hidden hx-get="/get-token" hx-trigger="load" hx-swap="outerHTML"></div>
+                <form id="form2" method="post" action="/remove-destination">
                     <h5>Delete Destination</h5>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Title</span>
                         </div>
-                        <input id="titleInput" type="text" class="form-control" placeholder="Image title"
+                        <input id="delete-input" type="text" class="form-control" placeholder="Deleted Destination name"
                                aria-label="Title" aria-describedby="basic-addon1">
                     </div>
-                    <div class="validation mb-3" id="title-validation"></div>
-                    <div>
-                        <input id="fileInput" type="file" class="form-control"
-                               accept=".jpeg, .jpg, .png, .gif" />
-                        <div class="validation" id="file-validation"></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                    <div class="validation mb-3" id="delete-validation"></div>
+                    <button type="submit" class="btn btn-primary mt-3">Delete</button>
                 </form>
             </div>
         </div>
