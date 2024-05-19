@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,15 +56,36 @@ app.MapGet("/get-destinations", async (IDbConnection db) =>
     var destinations = await db.QueryAsync(sql);
 
     string html = "";
+    string starHTML = "<img class=\"star\" src=\"images/star.svg\" alt=\"star\" />";
+    string halfStarHTML = "<img class=\"star\" src=\"images/half-star.svg\" alt=\"half-star\" />";
     foreach (var dest in destinations)
     {
+        float rating;
+        float.TryParse(dest.Rating, out rating);
+
+        StringBuilder starsBuilder = new StringBuilder();
+        int wholeStars = (int)rating;
+        bool hasHalfStar = (rating - wholeStars) > 0;
+
+        for (int i = 0; i < wholeStars; i++)
+        {
+            starsBuilder.Append(starHTML);
+        }
+
+        if (hasHalfStar)
+        {
+            starsBuilder.Append(halfStarHTML);
+        }
+
+        string stars = starsBuilder.ToString();
+
         html += $@"
         <div class=""card card-destination"">
             <img src=""{dest.Image}"" class=""card-img-top"" alt=""..."">
             <div class=""card-body"">
                 <h5 class=""card-title"">{dest.Name}</h5>
                 <p class=""country""></p>
-                <span class=""rating"">{dest.Rating}</span>
+                <span class=""rating"">{stars}</span>
             </div>
         </div>";
     }

@@ -120,3 +120,13 @@
 .validation{
     color: red;
 }
+
+.rating{
+    display: flex;
+    gap: 2px;
+}
+
+.star{
+    width: 10px;
+    height: 10px;
+}

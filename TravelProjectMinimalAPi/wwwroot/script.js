@@ -28,12 +28,14 @@ document.getElementById("form1").addEventListener('submit', (e) => {
     formData.append("file", fileInput.files[0], fileInput.files[0].name)
     formData.append("rating", ratingInput.value)
 
+    destinationInput.value = ""
+    ratingInput.value = 5
 
     fetch("/add-destination", {
         method: "POST",
         body: formData
     })
-        .then(() => {  })
+        .then(() => { })
         .catch(error => console.error("Error:", error))
 })
 
@@ -58,7 +60,7 @@ document.getElementById("form2").addEventListener('submit', (e) => {
     fetch(`/remove-destination/${deleteInput.value}`, {
         method: "DELETE",
     })
-        .then(() => { })
+        .then(() => {deleteInput.value = "" })
         .catch(error => console.error("Error:", error))
 })
 
